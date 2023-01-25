@@ -1,0 +1,11 @@
+
+# files
+*main*
+*.log
+
+# folders
+/__pycache__/
+/pencryptor/__pycache__/
+/data/
+/trash/
+/*egg-info*/
