@@ -9,3 +9,5 @@
 /data/
 /trash/
 /*egg-info*/
+/.venv/
+
