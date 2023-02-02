@@ -5,12 +5,14 @@ from pathlib import Path
 from typing import Union
 from io import BytesIO
 
+__all__ = ['PackEncryptor']
+
 
 class PackEncryptor:
     
     def __init__(self):
         self.__archive:SevenZipFile = None
-        self.__archive_bio:BytesIO = BytesIO(b'')
+        self.__archive_bio:BytesIO = None
         self.__head_length:int = -1
         self.__tail_length:int = -1
     
@@ -20,7 +22,7 @@ class PackEncryptor:
     
     # interfaces
     def create_archive(self, head_length:int, tail_length:int, password:str) -> PackEncryptor:
-        "create a new archive, old archive will lost"
+        "create a new archive, old archive will be lost"
         self.__close()
         self.__head_length = head_length
         self.__tail_length = tail_length
@@ -46,6 +48,9 @@ class PackEncryptor:
         return (head, middle, tail)
     
     def add_file(self, filepath:Union[str,Path]) -> PackEncryptor:
+        "add a single file to current archive"
+        if self.__archive is None or self.__archive_bio is None:
+            raise ValueError('Archive has not initialized, please call PackEncryptor.create_archive() first.')
         filepath = Path(filepath)
         if filepath.exists() == False:
             raise ValueError(f'File not found: {filepath}')
@@ -53,8 +58,14 @@ class PackEncryptor:
         return self
     
     def add_file_list(self, filelist:list) -> PackEncryptor:
+        "add a list of files to current archive"
+        if self.__archive is None or self.__archive_bio is None:
+            raise ValueError('Archive has not initialized, please call PackEncryptor.create_archive() first.')
         for filepath in filelist:
-            self.add_file(filepath)
+            filepath = Path(filepath)
+            if filepath.exists() == False:
+                raise ValueError(f'File not found: {filepath}')
+            self.__archive.write(file=filepath, arcname=filepath.name)
         return self
     
     
