@@ -80,6 +80,8 @@ class PackEncryptor:
             
             tuple( head: bytes, middle: bytes, tail: bytes )
         """
+        if self.__archive is None or self.__archive_bio is None:
+            raise ValueError('Fail to save an empty archive.')
         if self.__write_mode == 'save':
             for filepath in self.__file_list:
                 self.__archive.write(file=filepath, arcname=filepath.name)
@@ -92,6 +94,13 @@ class PackEncryptor:
         self.__archive = None
         self.__archive_bio = None
         return (head, middle, tail)
+    
+    def clear(self) -> None:
+        "clear current archive content"
+        self.__archive.close()
+        self.__archive_bio.close()
+        self.__archive = None
+        self.__archive_bio = None
     
     def add_file(self, filepath:Union[str,Path]) -> PackEncryptor:
         "add a single file to current archive"
