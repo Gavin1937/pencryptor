@@ -2,6 +2,7 @@
 # files
 *main*
 *.log
+*.7z
 
 # folders
 /__pycache__/
