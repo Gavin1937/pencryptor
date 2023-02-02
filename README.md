@@ -35,6 +35,8 @@ pe.add_file_list([
     'data/img2.jpg',
     'data/text2.txt'
 ])
+# return a list of files added to archive
+print(pe.list_files())
 # save and clear current archive
 output = pe.save_clear()
 
